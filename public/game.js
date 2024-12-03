@@ -53,10 +53,10 @@ async function drawCard() {
         )					
         const drawButton = document.getElementById("drawButton");
         drawButton.innerHTML = "Jugar de nuevo";
-
+        cardResult.innerHTML = "";
+        
         await fetch(`https://deckofcardsapi.com/api/deck/${deckID}/return`);
         playerScore = 0;
-        const playerHand = [];
 
     }
 }
