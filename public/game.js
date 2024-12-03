@@ -8,12 +8,12 @@ const response = await fetch("https://deckofcardsapi.com/api/deck/new/shuffle/?d
 const data = await response.json();
 const deckID = data.deck_id;
 
+console.log("Deck ID obtenido:", deckID);
 
 async function drawCard() {
     const drawButton = document.getElementById("drawButton");
     drawButton.innerHTML = "Pedir carta";
 
-    console.log("Deck ID obtenido:", deckID);
     try {
 
         // Saca una carta
@@ -39,32 +39,46 @@ async function drawCard() {
 
         cardResult.innerHTML = imageTags.join('');
 
+    //  GAME OVER
+        if (playerScore>21) {
+            alert(
+                "Perdiste"
+            )					
+            const drawButton = document.getElementById("drawButton");
+            drawButton.innerHTML = "Jugar de nuevo";
+            cardResult.innerHTML = "";
+            
+            await fetch(`https://deckofcardsapi.com/api/deck/${deckID}/return`);
+            playerScore = 0;
+
+            for (let index = 0; index <= playerHand.length+2; index++) {
+                playerHand.pop();
+                
+            }
+        }
 
     } catch (error) {
         console.error("Hubo un error:", error);
         document.getElementById("cardResult").innerText =
             "Error al sacar la carta.";
     }
-
-    // GAME OVER
-    if (playerScore>21) {
-        alert(
-            "Perdiste"
-        )					
-        const drawButton = document.getElementById("drawButton");
-        drawButton.innerHTML = "Jugar de nuevo";
-        cardResult.innerHTML = "";
-        
-        await fetch(`https://deckofcardsapi.com/api/deck/${deckID}/return`);
-        playerScore = 0;
-
-    }
 }
 
-function finish(){
+async function finish(){
     alert(
         "Tu resultado es: "+playerScore
-    )
+    )					
+    const drawButton = document.getElementById("drawButton");
+    drawButton.innerHTML = "Jugar de nuevo";
+    cardResult.innerHTML = "";
+    
+    await fetch(`https://deckofcardsapi.com/api/deck/${deckID}/return`);
+    playerScore = 0;
+
+    for (let index = 0; index <= playerHand.length+2; index++) {
+        playerHand.pop();
+        
+    }
 }
 // Llamadas
 document.getElementById("drawButton").addEventListener("click", drawCard);
